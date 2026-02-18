@@ -4,7 +4,7 @@ name: Myrient Search
 tagline: Fast full-text search engine for the Myrient game archive
 icon: https://raw.githubusercontent.com/tagius/myrient-search/main/umbrel-app-store/myrient-myrient-search/icon.svg
 category: media
-version: "1.0.5"
+version: "1.0.6"
 port: 8076
 description: >-
   A self-hosted search engine that crawls and indexes the entire Myrient game archive
@@ -34,8 +34,8 @@ gallery:
   - https://raw.githubusercontent.com/tagius/umbrel-community-app-store/refs/heads/main/myrient-myrient-search/gallery/2.jpeg
   - https://raw.githubusercontent.com/tagius/umbrel-community-app-store/refs/heads/main/myrient-myrient-search/gallery/3.jpeg
 releaseNotes: >-
-  Robust URL encoding for all special characters in file names including
-  &, (, ), !, ', ~, and * so all download links work correctly on Myrient.
+  Fix download URLs: encode special characters only in filenames while
+  preserving directory paths, so all download links work correctly.
 dependencies: []
 path: ""
 defaultUsername: ""
