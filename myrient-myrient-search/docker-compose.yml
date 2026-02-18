@@ -7,7 +7,7 @@ services:
       APP_PORT: 8080
 
   web:
-    image: ghcr.io/tagius/myrient-search:v1.0.7
+    image: ghcr.io/tagius/myrient-search:v1.0.8
     init: true
     restart: on-failure
     stop_grace_period: 1m
