@@ -8,7 +8,6 @@ services:
 
   web:
     image: ghcr.io/tagius/myrient-search:v1.0.0
-    user: "1000:1000"
     init: true
     restart: on-failure
     stop_grace_period: 1m
