@@ -1,43 +1,15 @@
-# Myrient Community App Store for Umbrel
+# Tagius Apps — Umbrel Community App Store
 
-A community app store for [Umbrel](https://umbrel.com) containing the Myrient Search Engine.
+A personal community app store for [Umbrel](https://umbrel.com).
 
 ## Apps
 
 | App | Description | Port |
 |-----|-------------|------|
-| Myrient Search | Full-text search engine for the Myrient game archive | 8076 |
+| [Uchiyomi](https://uchiyomi.com) | Self-hosted manga server that downloads too, with the Mihon extension engine (Suwayomi) and a Cloudflare solver | 8110 |
 
-## How to Install
+Uchiyomi is packaged from the upstream [Umbrel package](https://github.com/AngeloSha/uchiyomi/tree/main/deploy/umbrel/uchiyomi), plus the Suwayomi extension engine. Drop your CBZ/CBR files in **Downloads/manga**.
 
-### Option 1: Via Umbrel UI
+## Install
 
-1. Open your Umbrel dashboard
-2. Go to **App Store** > **Community App Stores** (or click the three dots menu)
-3. Click **Add Community App Store**
-4. Enter this repository URL: `https://github.com/tagius/umbrel-community-app-store`
-5. Click **Add**
-6. Find "Myrient Search" in the app store and click **Install**
-
-### Option 2: Via CLI
-
-SSH into your Umbrel and run:
-
-```bash
-sudo ~/umbrel/scripts/repo add https://github.com/tagius/umbrel-community-app-store.git
-sudo ~/umbrel/scripts/repo update
-```
-
-Then install from the Umbrel UI, or:
-
-```bash
-sudo ~/umbrel/scripts/app install myrient-myrient-search
-```
-
-## Port Allocation
-
-This app store uses port **8076**, which is not used by any official Umbrel app or common community app store. If you have a conflict, you can modify the `port` field in `myrient-myrient-search/umbrel-app.yml`.
-
-## Pre-indexed Image
-
-By default, the first launch will crawl and index the entire Myrient archive (takes ~30 minutes). If you want to skip this, you can deploy a pre-indexed image. See the [main repository README](https://github.com/tagius/myrient-search#pre-indexed-deployment) for instructions.
+Umbrel → **App Store** → ⋯ → **Community App Stores** → add `https://github.com/tagius/umbrel-community-app-store` → install **Uchiyomi**.
