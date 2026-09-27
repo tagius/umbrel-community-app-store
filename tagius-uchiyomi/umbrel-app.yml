@@ -3,7 +3,7 @@ id: tagius-uchiyomi
 category: media
 icon: https://raw.githubusercontent.com/tagius/umbrel-community-app-store/main/tagius-uchiyomi/icon.png
 name: Uchiyomi
-version: "0.48.4-1"
+version: "0.48.4-2"
 tagline: Self-hosted manga server that downloads too
 description: >-
   Uchiyomi is a self-hosted manga server that also downloads: it serves your manga, manhwa and webtoons
@@ -31,7 +31,7 @@ description: >-
   Built for a household: per-user reading progress, favourites, history and a leaderboard, age ratings,
   two-factor auth, single sign-on, an audit log, an admin panel, and nightly backups. No account and no
   cloud; the update check can be turned off and the anonymous install count is off unless you turn it on.
-releaseNotes: "Adds the official Uchiyomi icon."
+releaseNotes: "Raises the extension source limit from 25 to 50."
 
 developer: AngeloSha
 website: https://uchiyomi.com

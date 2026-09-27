@@ -32,7 +32,7 @@ services:
       BACKUP_KEEP: "14"
       # Extension engine (Mihon/Tachiyomi extensions), the service below.
       SUWAYOMI_URL: http://tagius-uchiyomi_suwayomi_1:4567
-      SUWAYOMI_MAX_SOURCES: "25"
+      SUWAYOMI_MAX_SOURCES: "50"
       SUWAYOMI_PAGE_CONCURRENCY: "4"
     volumes:
       - ${UMBREL_ROOT}/data/storage/downloads/manga:/library
