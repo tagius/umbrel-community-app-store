@@ -1,0 +1,66 @@
+# Opens a PR when Uchiyomi publishes a new release. Merging it is what makes Umbrel offer the update.
+name: Bump Uchiyomi
+
+on:
+  schedule:
+    - cron: "0 6 */3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      UPSTREAM: AngeloSha/uchiyomi
+      APP: tagius-uchiyomi
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump to the latest release
+        run: |
+          set -euo pipefail
+          current=$(grep -oP 'ghcr.io/angelosha/uchiyomi:\Kv[0-9.]+' $APP/docker-compose.yml)
+          latest=$(gh release view -R $UPSTREAM --json tagName -q .tagName)
+          branch="bump-uchiyomi-$latest"
+          if [ "$current" = "$latest" ]; then echo "Up to date ($current)"; exit 0; fi
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then echo "PR for $latest already open"; exit 0; fi
+
+          digest=$(docker buildx imagetools inspect ghcr.io/angelosha/uchiyomi:$latest --format '{{json .Manifest}}' | jq -r .digest)
+          title=$(gh release view $latest -R $UPSTREAM --json name -q .name)
+
+          LATEST=$latest DIGEST=$digest TITLE="$title" python3 - <<'EOF'
+          import os, re, json
+          app, tag, digest, title = os.environ["APP"], os.environ["LATEST"], os.environ["DIGEST"], os.environ["TITLE"]
+          p = f"{app}/docker-compose.yml"
+          s = open(p).read()
+          s = re.sub(r"(ghcr\.io/angelosha/uchiyomi:)v[0-9.]+@sha256:[0-9a-f]{64}", rf"\g<1>{tag}@{digest}", s)
+          open(p, "w").write(s)
+          p = f"{app}/umbrel-app.yml"
+          s = open(p).read()
+          s = re.sub(r'^version: ".*"$', f'version: "{tag.lstrip("v")}"', s, flags=re.M)
+          s = re.sub(r"^releaseNotes: .*$", "releaseNotes: " + json.dumps(f"Uchiyomi {title}", ensure_ascii=False), s, flags=re.M)
+          open(p, "w").write(s)
+          EOF
+
+          # The "Upgrading" section of every release since the installed one: compose or env changes show up here.
+          {
+            echo "Bumps Uchiyomi $current → $latest (\`$digest\`)."
+            echo
+            echo "**Read the upgrade notes below before merging.** Anything about compose files or environment variables must be applied by hand. Merging makes Umbrel offer the update within about 5 minutes."
+            for t in $(gh release list -R $UPSTREAM -L 50 --json tagName -q '.[].tagName'); do
+              [ "$t" = "$current" ] && break
+              echo; echo "## [$t](https://github.com/$UPSTREAM/releases/tag/$t)"
+              gh release view $t -R $UPSTREAM --json body -q .body | awk '/^### Upgrading/{f=1;next} /^(##[^#]|<!--)/{f=0} f'
+            done
+          } > /tmp/body.md
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "Uchiyomi ${latest#v}"
+          git push origin "$branch"
+          gh pr create --title "Uchiyomi ${latest#v}" --body-file /tmp/body.md
