@@ -27,7 +27,8 @@ jobs:
           latest=$(gh release view -R $UPSTREAM --json tagName -q .tagName)
           branch="bump-uchiyomi-$latest"
           if [ "$current" = "$latest" ]; then echo "Up to date ($current)"; exit 0; fi
-          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then echo "PR for $latest already open"; exit 0; fi
+          # Check the PR, not the branch: a failed `gh pr create` leaves the branch behind without one.
+          if [ -n "$(gh pr list --head "$branch" --state open -q '.[].number' --json number)" ]; then echo "PR for $latest already open"; exit 0; fi
 
           digest=$(docker buildx imagetools inspect ghcr.io/angelosha/uchiyomi:$latest --format '{{json .Manifest}}' | jq -r .digest)
           title=$(gh release view $latest -R $UPSTREAM --json name -q .name)
@@ -62,5 +63,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
           git commit -am "Uchiyomi ${latest#v}"
-          git push origin "$branch"
+          git push -f origin "$branch"
           gh pr create --title "Uchiyomi ${latest#v}" --body-file /tmp/body.md
